@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dgt_reports,access_dgt_reports,model_dgt_reports,hr.group_hr_manager,1,1,1,1
