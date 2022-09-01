@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Nómina Dominicana Utree",
+    'name': "Nómina Dominicana Utreee",
     'summary': """Adaptación de la nómina en odoo para República Dominicana""",
     'description': """Nómina Dominicana""",
-    'author': "Pablo Yoel Mercedes Poché, Utree",
+    'author': "Pablo Yoel Mercedes Poché, Utreee",
     'category': 'Human Resources',
     'version': '1.0.0',
     'license': '',

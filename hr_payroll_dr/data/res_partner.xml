@@ -4,21 +4,21 @@
         <record id="partner_tss" model="res.partner">
             <field name="name">TESORERIA DE LA SEGURIDAD SOCIAL</field>
             <field name="vat">401517078</field>
-            <field name="supplier_rank">1</field>
+<!--            <field name="supplier_rank">1</field>-->
             <field name="ref">tss</field>
         </record>
 
         <record id="partner_infotep" model="res.partner">
             <field name="name">INSTITUTO NACIONAL DE FORMACION TECNICO PROFESIONAL</field>
             <field name="vat">401051788</field>
-            <field name="supplier_rank">1</field>
+<!--            <field name="supplier_rank">1</field>-->
             <field name="ref">infotep</field>
         </record>
 
         <record id="partner_dgii" model="res.partner">
             <field name="name">DIRECCION GENERAL DE IMPUESTOS INTERNOS</field>
             <field name="vat">401506254</field>
-            <field name="supplier_rank">1</field>
+<!--            <field name="supplier_rank">1</field>-->
             <field name="ref">dgii</field>
         </record>
     </data>
