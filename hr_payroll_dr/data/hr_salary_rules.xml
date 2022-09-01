@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="hr_rule_basic" model="hr.salary.rule">
+            <field name="name">Salario Básico</field>
+            <field name="sequence" eval="1"/>
+            <field name="code">BASIC</field>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+result = contract.hr_rule_basic(payslip=payslip)
+            </field>
+        </record>
+
+        <record id="hr_rule_tss_salary" model="hr.salary.rule">
+            <field name="name">Salario Cotizable Tss</field>
+            <field name="sequence" eval="1"/>
+            <field name="code">SALTSS</field>
+            <field name="category_id" ref="hr_payroll_dr.SALCOT"/>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+result = contract.hr_rule_tss_salary(payslip=payslip)
+            </field>
+        </record>
+
+        <record id="hr_rule_medical_insurance_discount" model="hr.salary.rule">
+            <field name="name">Descuento Seguro Medico</field>
+            <field name="sequence" eval="1"/>
+            <field name="code">DSM</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+result = -(4783.59 * 0.3)
+            </field>
+        </record>
+
+        <record id="hr_rule_taxable" model="hr.salary.rule">
+            <field name="name">Salario Bruto - Salario Cotizable TSS/INFOTEP</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">GROSS</field>
+            <field name="category_id" ref="hr_payroll.GROSS"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+result = contract.hr_rule_basic(payslip=payslip)
+            </field>
+        </record>
+
+        <record id="hr_rule_net" model="hr.salary.rule">
+            <field name="name">Salario neto a pagar</field>
+            <field name="sequence" eval="200"/>
+            <field name="code">NET</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+result = categories.BASIC + categories.ALW + categories.DED + categories.COM + categories.HE + categories.VACA + categories.INCE + categories.ODED + categories.APORA
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="ret_sfs" model="hr.salary.rule">
+            <field name="name">Retención ARS</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">SFST</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+#compute dependants
+sfs_e_percent = 0.0304
+result = -(contract.ret_sfs(payslip=payslip, sfs_e_percent=sfs_e_percent))
+            </field>
+<!--            <field name="register_id" ref="hr_payroll_dr.contribution_register_tss"/>-->
+        </record>
+
+        <record id="ret_afp" model="hr.salary.rule">
+            <field name="name">AFP Afiliado</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">SVDS</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="condition_select">none</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+afp_e_percent = 0.0287
+result = -(contract.hr_rule_ret_afp(payslip=payslip, afp_e_percent=afp_e_percent))
+            </field>
+<!--            <field name="register_id" ref="hr_payroll_dr.contribution_register_tss"/>-->
+        </record>
+
+        <record id="cont_sfs" model="hr.salary.rule">
+            <field name="name">Contribución del empleador SFS</field>
+            <field name="sequence" eval="6"/>
+            <field name="code">SFS E</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+sfs_percent = 0.0709
+result = contract.hr_rule_cont_sfs(payslip=payslip, sfs_percent=sfs_percent)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll_dr.contribution_register_tss"/>-->
+        </record>
+
+        <record id="cont_afp" model="hr.salary.rule">
+            <field name="name">Contribución del Empleador AFP</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">SVDS E</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+afp_percent = 0.071
+result = contract.hr_rule_cont_afp(payslip=payslip, afp_percent=afp_percent)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll_dr.contribution_register_tss"/>-->
+        </record>
+
+        <record id="cont_srl" model="hr.salary.rule">
+            <field name="name">Contribución Seguro de Riesgos Laborales (SRL)</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">SRL E</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_python_compute">
+result = contract.cont_srl()
+            </field>
+<!--            <field name="register_id" ref="hr_payroll_dr.contribution_register_tss"/>-->
+        </record>
+
+        <record id="ret_isr" model="hr.salary.rule">
+            <field name="name">Impuesto Sobre la Renta</field>
+            <field name="sequence" eval="6"/>
+            <field name="code">ISR</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+afp = 0.0287
+sfs = 0.0304
+
+# Compute ISR
+sueldoneto = SCISR * 12
+
+# desde          hasta       tasa
+rangos = [[0, 416220.00, 0],
+          [416220.01, 624329.00, 0.15],
+          [624329.01, 867123.00, 0.20],
+          [867123.01, 0, 0.25]]
+
+tasa1 = (rangos[1][1] - rangos[0][1]) * rangos[1][2]
+tasa2 = (rangos[2][1] - rangos[1][1]) * rangos[2][2]
+
+result = 0
+            </field>
+<!--            <field name="register_id" ref="hr_payroll_dr.contribution_register_dgii"/>-->
+        </record>
+
+        <record id="cont_infotep" model="hr.salary.rule">
+            <field name="name">Contribución Infotep</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">CINF</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="condition_select">none</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = GROSS * 0.01 * 0.5
+            </field>
+<!--            <field name="register_id" ref="hr_payroll_dr.contribution_register_infotep"/>-->
+        </record>
+
+        <record id="comissions" model="hr.salary.rule">
+            <field name="name">Comisiones</field>
+            <field name="sequence" eval="3"/>
+            <field name="code">COMM</field>
+            <field name="category_id" ref="hr_payroll_dr.COM"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+#result = inputs.COMIVE.amount
+result = 0
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="quotable_isr_salary" model="hr.salary.rule">
+            <field name="name">Salario Cotizable ISR</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">SCISR</field>
+            <field name="category_id" ref="hr_payroll_dr.SALCOT"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_python">
+cotizable = 0.0
+if payslip_day &gt;= 25 and payslip_day &lt;= 31:
+    cotizable = (GROSS + categories.HE + categories.INCE) * 12
+else:
+    cotizable = (GROSS + categories.HE + categories.INCE) * 12
+
+if cotizable &gt;= 416220.00:
+    result = True
+else:
+    result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# COMM, VACA, INCENT
+
+date_to = payslip.date_to
+payslip_day = date_to.day
+
+last_AFP = 0
+last_SFS = 0
+last_GROSS = 0
+
+result = 0
+            </field>
+        </record>
+
+        <record id="extra_hours" model="hr.salary.rule">
+            <field name="name">Horas No Regulares</field>
+            <field name="sequence" eval="3"/>
+            <field name="code">HOREX</field>
+            <field name="category_id" ref="hr_payroll_dr.HE"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.HE15 | inputs.HE35 | inputs.HE50 | inputs.HE100
+
+result = 0
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="incentives" model="hr.salary.rule">
+            <field name="name">Incentivos</field>
+            <field name="sequence" eval="3"/>
+            <field name="code">INCENT</field>
+            <field name="category_id" ref="hr_payroll_dr.INCE"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = 0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.INCEN
+
+result = inputs.INCEN.amount
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="vacations" model="hr.salary.rule">
+            <field name="name">Vacaciones</field>
+            <field name="sequence" eval="3"/>
+            <field name="code">VACA</field>
+            <field name="category_id" ref="hr_payroll_dr.VACA"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+# inputs.VACA
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.VACA
+
+result = (contract.wage / 23.83) * inputs.VACA.amount
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="cafeteria" model="hr.salary.rule">
+            <field name="name">Cafetería</field>
+            <field name="sequence" eval="148"/>
+            <field name="code">CAFE</field>
+            <field name="category_id" ref="hr_payroll_dr.ODED"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.CAFE
+
+result = -(inputs.CAFE.amount)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="farmacia" model="hr.salary.rule">
+            <field name="name">Farmacia</field>
+            <field name="sequence" eval="148"/>
+            <field name="code">FARMA</field>
+            <field name="category_id" ref="hr_payroll_dr.ODED"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.FARMA
+
+result = -(inputs.FARMA.amount)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="ahorro" model="hr.salary.rule">
+            <field name="name">Ahorro</field>
+            <field name="sequence" eval="148"/>
+            <field name="code">AHORRO</field>
+            <field name="category_id" ref="hr_payroll_dr.ODED"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.AHORRO
+
+result = -(inputs.AHORRO.amount)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="restaurant" model="hr.salary.rule">
+            <field name="name">Restaurante</field>
+            <field name="sequence" eval="149"/>
+            <field name="code">REST</field>
+            <field name="category_id" ref="hr_payroll_dr.ODED"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.REST
+
+result = -(inputs.REST.amount)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="medical_assurance" model="hr.salary.rule">
+            <field name="name">Seguro complementario</field>
+            <field name="sequence" eval="150"/>
+            <field name="code">SEGMED</field>
+            <field name="category_id" ref="hr_payroll_dr.ODED"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.SEGMED
+
+result = -(inputs.SEGMED.amount)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="salary_advance" model="hr.salary.rule">
+            <field name="name">Avances a sueldo</field>
+            <field name="sequence" eval="151"/>
+            <field name="code">AVAN</field>
+            <field name="category_id" ref="hr_payroll_dr.ODED"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.AVAN
+
+result = -(inputs.AVAN.amount)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="financial" model="hr.salary.rule">
+            <field name="name">Financiera</field>
+            <field name="sequence" eval="152"/>
+            <field name="code">FINAN</field>
+            <field name="category_id" ref="hr_payroll_dr.ODED"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.FINAN
+
+result = -(inputs.FINAN.amount)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="other_deductions" model="hr.salary.rule">
+            <field name="name">Otros descuentos</field>
+            <field name="sequence" eval="155"/>
+            <field name="code">OTDESC</field>
+            <field name="category_id" ref="hr_payroll_dr.ODED"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.OTDESC
+
+result = -(inputs.OTDESC.amount)
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="additional_contribution_sfs" model="hr.salary.rule">
+            <field name="name">Aportes adicionales SFS</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">APORSFS</field>
+            <field name="category_id" ref="hr_payroll_dr.APORA"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.APORSFS
+
+result = -(inputs.APORSFS.amount)
+            </field>
+<!--            <field name="register_id" ref="contribution_register_tss"/>-->
+        </record>
+
+        <record id="additional_contribution_afp" model="hr.salary.rule">
+            <field name="name">Aportes adicionales AFP</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">APORAFP</field>
+            <field name="category_id" ref="hr_payroll_dr.APORA"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.APORAFP
+
+result = -(inputs.APORAFP.amount)
+            </field>
+<!--            <field name="register_id" ref="contribution_register_tss"/>-->
+        </record>
+
+        <record id="isr_positive_balance" model="hr.salary.rule">
+            <field name="name">Saldo a favor ISR</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">SFISR</field>
+            <field name="category_id" ref="hr_payroll_dr.SFISR"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# inputs.SFISR
+
+result = inputs.SFISR.amount
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+        <record id="previous_news" model="hr.salary.rule">
+            <field name="name">Novedades Anteriores</field>
+            <field name="sequence" eval="4"/>
+            <field name="code">NOVAN</field>
+            <field name="category_id" ref="hr_payroll_dr.NOAN"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+date_to = payslip.date_to
+payslip_day = date_to.day
+
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# COMM, VACA, INCENT
+result = 0
+            </field>
+        </record>
+
+        <record id="previous_extra_hours" model="hr.salary.rule">
+            <field name="name">Horas extras primera quincena</field>
+            <field name="sequence" eval="3"/>
+            <field name="code">HEPQ</field>
+            <field name="category_id" ref="hr_payroll_dr.NOAN"/>
+            <field name="struct_id" ref="hr_payroll_dr.structure_permanent_employees"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+date_to = payslip.date_to
+payslip_day = date_to.day
+
+result = False
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+slip_ids = employee.slip_ids.sorted('id')
+list_ids = [line.id for line in slip_ids if line.payslip_type == 'normal']
+result = 0
+            </field>
+        </record>
+
+        <!--Estructura de doble sueldo / regalía -->
+        <record id="cumulative_salary_computation" model="hr.salary.rule">
+            <field name="name">Cómputo acumulativo de salarios</field>
+            <field name="sequence" eval="1"/>
+            <field name="code">ACUSAL</field>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_christmas_salary"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+codes = ['BASIC', 'BAEX', 'COMM', 'INCENT']
+amount = 0
+result = amount
+            </field>
+        </record>
+
+        <record id="net_christmas_salary" model="hr.salary.rule">
+            <field name="name">Regalía / Doble sueldo</field>
+            <field name="sequence" eval="100"/>
+            <field name="code">REG/DOB</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="condition_select">none</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_christmas_salary"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = categories.BASIC / 12
+            </field>
+        </record>
+
+        <!-- Estructura de empleados extranjeros -->
+        <record id="hr_rule_basic_foreign_employees" model="hr.salary.rule">
+            <field name="name">Salario básico</field>
+            <field name="sequence" eval="1"/>
+            <field name="code">BAEX</field>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_foreign_employees"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = contract.wage
+            </field>
+        </record>
+
+        <record id="hr_rule_net_foreign_employees" model="hr.salary.rule">
+            <field name="name">Salario neto a pagar</field>
+            <field name="sequence" eval="200"/>
+            <field name="code">NETEX</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="condition_select">none</field>
+            <field name="struct_id" ref="hr_payroll_dr.structure_foreign_employees"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = categories.BASIC + categories.DED + categories.COM + categories.HE + categories.INCE + categories.ODED
+            </field>
+<!--            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>-->
+        </record>
+
+    </data>
+</odoo>
