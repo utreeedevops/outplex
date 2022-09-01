@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="employee_request_action" model="ir.actions.act_window">
+            <field name="name">Employees Web Requests</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">employee.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="employee_request_menuitem"
+                  name="Employees Web Requests"
+                  parent="hr.menu_hr_employee_payroll"
+                  action="hr_web_employee_suport.employee_request_action"
+                  sequence="20"
+                  groups="hr_contract.group_hr_contract_manager"/>
+
+        <record id="employee_request_view_form" model="ir.ui.view">
+            <field name="name">employee_request_view_form</field>
+            <field name="model">employee.request</field>
+            <field name="arch" type="xml">
+                <form string="employee_request_form">
+                    <sheet>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="employee_code"/>
+                            <field name="request_date"/>
+                            <field name="notes"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="employee_request_view_tree" model="ir.ui.view">
+            <field name="name">employee_request_view_tree</field>
+            <field name="model">employee.request</field>
+            <field name="arch" type="xml">
+                <tree string="employee_request_tree">
+                    <field name="employee_id"/>
+                    <field name="employee_code"/>
+                    <field name="request_date"/>
+                    <field name="notes"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="employee_request_list_template">
+            <t t-call="website.layout">
+                <!--                <t t-set="additional_title">Registro de Infraesrtucturas</t>-->
+                <div class="oe_structure">
+                    <section class="pt48 pb32 bg-200">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <h2 class="h1 text-secondary">Solicitudes Empleados</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 oe_img_bg text-center pb224 pt224" data-name="Block"
+                         style="background-color: #F1F1F1;">
+                        <p>
+                            <br/>
+                        </p>
+                    </div>
+                    <div class="col-lg-6 s_col_no_resize">
+                        <div class="row h-100">
+                            <div class="col-lg-6 pt24 pb8 text-center o_cc o_cc4" data-name="Block">
+                                <h3>Solicitud de Permisos y Vacaciones</h3>
+                                <div class="form-group row justify-content-center">
+                                    <form method="POST" action="/absences_register_form">
+                                        <button type="submit" class="btn btn-primary">Solicitar</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 pt24 pb8 text-center o_cc o_cc4" data-name="Block">
+                                <h3>Consulta de Asistencias</h3>
+                                <div class="form-group row justify-content-center">
+                                    <form method="POST" action="/assistance_request_form">
+                                        <button type="submit" class="btn btn-primary">Consultar</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 pt24 pb8 text-center o_cc o_cc4" data-name="Block">
+                                <h3>Solicitudes Generales</h3>
+                                <div class="form-group row justify-content-center">
+                                    <form method="POST" action="/general_request_register_form">
+                                        <button type="submit" class="btn btn-primary">Acceder</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 pt24 pb8 text-center o_cc o_cc4" data-name="Block">
+                                <h3>Solicitud de Comprobante de Nomina</h3>
+                                <!--                                <p>And a great subtitle</p>-->
+                                <div class="form-group row justify-content-center">
+                                    <form method="POST" action="/payment_request_form">
+                                        <button type="submit" class="btn btn-primary">Consultar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="absences_register_template">
+            <t t-call="website.layout">
+                <!--                <t t-set="additional_title">Registro de Infraesrtucturas</t>-->
+                <div class="oe_structure">
+                    <section class="pt48 pb32 bg-200">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <h2 class="h1 text-secondary">Registra Tus Solicites de Ausencias</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="absences_form" class="container">
+                            <form role="form" action="/absences_register" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="form-group row form-field">
+                                    <label class="col-form-label" for="street">Código de Empleado</label>
+                                    <input type="number" class="form-control o_website_form_input" name="e_pin"/>
+                                </div>
+
+                                <div class="form-group row form-field">
+                                    <label class="col-form-label" for="Type">Razón de Ausencia</label>
+                                    <select name="type" class="form-control" required="1">
+                                        <option name="1_type" t-att-value="medic">Cita Médica</option>
+                                        <option name="2_type" t-att-value="familiar">Asuntos Familiares</option>
+                                        <option name="3_type" t-att-value="vacations">Vacaciones</option>
+                                        <option name="4_type" t-att-value="others">Otros</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="col-form-label" for="date_label">Ausencia</label>
+                                    <div>
+                                        <label class="col-form-label" for="fday">Desde -</label>
+                                        <input type="date" name="fday" pattern="\d{4}-\d{2}-\d{2}"/>
+                                        <label class="col-form-label" for="tday">- Hasta -</label>
+                                        <input type="date" name="tday" pattern="\d{4}-\d{2}-\d{2}"/>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="col-form-label" for="period">Periodo de Ausencia</label>
+                                    <select name="period" class="form-control" required="1">
+                                        <option name="1_type" t-att-value="half_pm">Medio Día Tarde</option>
+                                        <option name="2_type" t-att-value="half_am">Medio Día Mañana</option>
+                                        <option name="3_type" t-att-value="full_day">Día Completo</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group row form-field">
+                                    <label class="col-form-label" for="description">Nota</label>
+                                    <input type="text" class="form-control o_website_form_input" name="description"/>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="submit" class="btn btn-primary pull-left">Registrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </template>
+
+        <template id="general_request_register_template">
+            <t t-call="website.layout">
+                <div class="oe_structure">
+                    <section class="pt48 pb32 bg-200">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <h2 class="h1 text-secondary">Solicitudes Generales</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="absences_form" class="container">
+                            <form role="form" action="/general_request" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="form-group row form-field">
+                                    <label class="col-form-label" for="street">Código de Empleado</label>
+                                    <input type="number" class="form-control o_website_form_input" name="e_pin"/>
+                                </div>
+
+                                <div class="form-group row form-field">
+                                    <label class="col-form-label" for="description">Solicitud</label>
+                                    <input type="text" class="form-control o_website_form_input" name="request"/>
+                                </div>
+
+                                <div class="form-group row form-field">
+                                    <label class="col-form-label" for="description">Documento</label>
+                                    <input type="file" class="form-control o_website_form_input" name="file"/>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="submit" class="btn btn-primary pull-left">Registrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </template>
+
+        <template id="period">
+            <label class="col-form-label" for="date_label">Periodo</label>
+
+            <div class="form-group row form-field">
+
+                <select id="month" name="month">
+                    <option selected="1">January</option>
+                    <option>February</option>
+                    <option>March</option>
+                    <option>April</option>
+                    <option>May</option>
+                    <option>June</option>
+                    <option>July</option>
+                    <option>August</option>
+                    <option>September</option>
+                    <option>October</option>
+                    <option>November</option>
+                    <option>December</option>
+                </select>
+
+                <select id="year" name="year">
+                    <option>2020</option>
+                    <option>2021</option>
+                    <option>2022</option>
+                    <option>2023</option>
+                    <option>2024</option>
+                    <option>2025</option>
+                </select>
+            </div>
+
+        </template>
+
+        <template id="assistance_request_template">
+            <t t-call="website.layout">
+                <div class="oe_structure">
+                    <section class="pt48 pb32 bg-200">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <h2 class="h1 text-secondary">Consulta de Asistencias</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="assistance_request_form" class="container">
+                            <form role="form" action="/assistance_request" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="form-group row form-field">
+                                    <label class="col-form-label" for="street">Código de Empleado</label>
+                                    <input type="text" class="form-control o_website_form_input" name="e_pin"/>
+                                </div>
+
+                                <div>
+                                    <t t-call="hr_web_employee_suport.period"/>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="submit" class="btn btn-primary pull-left">Solicitar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </template>
+
+        <template id="payment_request_template">
+            <t t-call="website.layout">
+                <div class="oe_structure">
+                    <section class="pt48 pb32 bg-200">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <h2 class="h1 text-secondary">Consulta de Comprobantes de Pagos de Nómina</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="assistance_request_form" class="container">
+                            <form role="form" action="/payment_receipt_request" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="form-group row form-field">
+                                    <label class="col-form-label" for="street">Código de Empleado</label>
+                                    <input type="text" class="form-control o_website_form_input" name="e_pin"/>
+                                </div>
+
+                                <div>
+                                    <div>
+                                        <t t-call="hr_web_employee_suport.period"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="submit" class="btn btn-primary pull-left">Solicitar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </template>
+
+        <template id="request_saved_template" name="Registro creado">
+            <t t-call="website.layout">
+                <section class="s_text_block pt16 pb8" style="background-color:#FFFFFF;">
+                    <div id="wrap" class="oe_structure oe_empty">
+                        <div class="container">
+                            <div clas="row">
+                                <h1 class="text-center">
+                                    <i class="fa fa-check-circle fa-2x text-success"
+                                       role="img"
+                                       aria-label="Success"
+                                       title="Success"/>
+                                </h1>
+                                <t>
+                                    <h1 class="text-center" style="color: #875A7B;">Solicitud Enviada!</h1>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </t>
+        </template>
+
+        <!--        Elemento o accion de menú que permite llamar al formulario para las solicitudes generales de los empleados-->
+
+        <record id="general_requests_menu" model="website.menu">
+            <field name="name">Registra tu Solicitud!</field>
+            <field name="url">/general_request_register</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">30</field>
+        </record>
+
+    </data>
+</odoo>
