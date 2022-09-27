@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit Form View to Modify it -->
+        <record id="hr_payslip_view_form_outplex_inherit" model="ir.ui.view">
+            <field name="name">hr.payslip.view.form.outplex.inherit</field>
+            <field name="model">hr.payslip</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='struct_id']" position="after">
+                    <field name="referral_bonus" widget='boolean_toggle'/>
+                    <field name="n_referrals"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

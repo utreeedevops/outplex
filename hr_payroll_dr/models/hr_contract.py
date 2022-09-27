@@ -62,7 +62,8 @@ class HrContract(models.Model):
                 # print('in')
                 worked_hours = sum(self.env['hr.attendance'].search([
                     ('check_in', '>=', payslip.date_from),
-                    ('check_in', '<=', payslip.date_to)
+                    ('check_in', '<=', payslip.date_to),
+                    ('employee_id', '=', payslip.employee_id.id)
                 ]).mapped('worked_hours'))
 
                 amount = rec.hourly_wage * worked_hours
@@ -86,7 +87,8 @@ class HrContract(models.Model):
                 # print('in')
                 worked_hours = sum(self.env['hr.attendance'].search([
                     ('check_in', '>=', payslip.date_from),
-                    ('check_in', '<=', payslip.date_to)
+                    ('check_in', '<=', payslip.date_to),
+                    ('employee_id', '=', payslip.employee_id.id)
                 ]).mapped('worked_hours'))
 
                 amount = rec.hourly_wage * worked_hours
@@ -110,7 +112,8 @@ class HrContract(models.Model):
                 # print('in')
                 worked_hours = sum(self.env['hr.attendance'].search([
                     ('check_in', '>=', payslip.date_from),
-                    ('check_in', '<=', payslip.date_to)
+                    ('check_in', '<=', payslip.date_to),
+                    ('employee_id', '=', payslip.employee_id.id)
                 ]).mapped('worked_hours'))
 
                 amount = rec.hourly_wage * worked_hours
@@ -134,7 +137,8 @@ class HrContract(models.Model):
                 # print('in')
                 worked_hours = sum(self.env['hr.attendance'].search([
                     ('check_in', '>=', payslip.date_from),
-                    ('check_in', '<=', payslip.date_to)
+                    ('check_in', '<=', payslip.date_to),
+                    ('employee_id', '=', payslip.employee_id.id)
                 ]).mapped('worked_hours'))
 
                 amount = rec.hourly_wage * worked_hours
@@ -150,8 +154,37 @@ class HrContract(models.Model):
             result = 65050 * (1.3/100) if rec.wage > 65050 else rec.wage * (1.3/100)
         return result
 
-    def ret_isr(self):
+    # SALARIO ISR
+    def isr_salary(self, payslip):
+        result = self.hr_rule_tss_salary(payslip)
+        return result
+
+    # Impuesto Sobre la Renta
+    def ret_isr(self, payslip, aged_salary, salary_range, tributes):
         result = 0
+        salary = self.hr_rule_basic(payslip)
+        # aged_salary = self.hr_rule_basic(payslip) * 12
+
+        # salary_range = [
+        #     [0, 416220.00, 0],
+        #     [416220.01, 624329.00, 0.15],
+        #     [624329.01, 867123.00, 0.20],
+        #     [867123.01, 0, 0.25]
+        # ]
+
+        # tributes = [31216.00, 79776.00]
+
+        if aged_salary >= salary_range[0][0] and aged_salary <= salary_range[0][1]:
+            result = 0
+        elif aged_salary >= salary_range[1][0] and aged_salary <= salary_range[1][1]:
+            result = salary_range[1][2] * salary
+
+        elif aged_salary >= salary_range[2][0] and aged_salary <= salary_range[2][1]:
+            result = salary_range[2][2] * salary + tributes[0]
+
+        elif aged_salary >= salary_range[3][0]:
+            result = salary_range[3][2] * salary + tributes[1]
+
         return result
 
     def cont_infotep(self):
