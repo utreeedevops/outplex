@@ -10,7 +10,8 @@
     'depends': [
         'hr',
         'hr_contract',
-        'hr_payroll'
+        'hr_payroll',
+        'hr_attendance'
     ],
     'support': 'https://www.utreee.com/?page_id=3509&lang=es',
     'data': [
@@ -18,6 +19,7 @@
         'views/hr_attendance_view.xml',
         'views/hr_contract_view.xml',
         'views/hr_payslip_view.xml',
+        'reports/report_payslip.xml'
         # 'data/salary_rule_categories.xml',
     ],
     'installable': True,

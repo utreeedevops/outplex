@@ -158,11 +158,12 @@ sfs = 0.0304
 # Compute ISR
 sueldoneto = SCISR * 12
 
-# desde          hasta       tasa
-rangos = [[0, 416220.00, 0],
-          [416220.01, 624329.00, 0.15],
-          [624329.01, 867123.00, 0.20],
-          [867123.01, 0, 0.25]]
+# Desde hasta Tasa y Porcentaje aplicado
+rangos = [
+                [0,         416220.00, 0],
+                [416220.01, 624329.00, 0.15],
+                [624329.01, 867123.00, 0.20],
+                [867123.01, 0,         0.25]]
 
 tasa1 = (rangos[1][1] - rangos[0][1]) * rangos[1][2]
 tasa2 = (rangos[2][1] - rangos[1][1]) * rangos[2][2]

@@ -4,6 +4,11 @@ from odoo import api, fields, models
 class HrContract(models.Model):
     _inherit = 'hr.contract'
 
+    affiliated = fields.Boolean(
+        string='Afiliado',
+        default=True
+    )
+
     # Here we are trying to figure out how to calculate all rules  values calculation
 
     # Salario Básico (Pago Mensual, Quincenal y por Horas)
@@ -35,7 +40,7 @@ class HrContract(models.Model):
 
         return result
 
-    # Descuento Seguro Medico
+    # Descuento Seguro Médico
     def hr_rule_medical_insurance_discount(self):
         return 4783.59 * 0.3
 
@@ -160,9 +165,9 @@ class HrContract(models.Model):
         return result
 
     # Impuesto Sobre la Renta
-    def ret_isr(self, payslip, aged_salary, salary_range, tributes):
+    def ret_isr(self, amount, aged_salary, salary_range, tributes):
         result = 0
-        salary = self.hr_rule_basic(payslip)
+        salary = amount
         # aged_salary = self.hr_rule_basic(payslip) * 12
 
         # salary_range = [
@@ -174,12 +179,13 @@ class HrContract(models.Model):
 
         # tributes = [31216.00, 79776.00]
 
-        if aged_salary >= salary_range[0][0] and aged_salary <= salary_range[0][1]:
+        if salary_range[0][0] <= aged_salary <= salary_range[0][1]:
             result = 0
-        elif aged_salary >= salary_range[1][0] and aged_salary <= salary_range[1][1]:
+
+        elif salary_range[1][0] <= aged_salary <= salary_range[1][1]:
             result = salary_range[1][2] * salary
 
-        elif aged_salary >= salary_range[2][0] and aged_salary <= salary_range[2][1]:
+        elif salary_range[2][0] <= aged_salary <= salary_range[2][1]:
             result = salary_range[2][2] * salary + tributes[0]
 
         elif aged_salary >= salary_range[3][0]:
