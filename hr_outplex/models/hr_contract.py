@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
+import pytz
 from datetime import datetime as dt
 import datetime
 
@@ -23,7 +24,6 @@ class HrSalaryRule(models.Model):
                         #   'downtime' - Downtime
                         #   'refresher' - Refresher
                         #   'coaching' - Coaching
-                        #   'vacation' - Vacations
                         #   'support' - Support
                         #   'training' - Training
                         #   'day_off' - Day Off Time
@@ -76,11 +76,11 @@ class HrContract(models.Model):
                 ('hour_type', 'not in', hour_types),
                 ('check_in', '>=', payslip.date_from),
                 ('check_in', '<=', payslip.date_to),
-                ('employee_id', '=', payslip.employee_id)]).filtered(lambda a: ranges[0] <= a.check_in.hour)
+                ('employee_id', '=', payslip.employee_id)]).filtered(lambda a: ranges[0] <= (a.check_in.hour - datetime.timedelta(hours=5)))
 
             for attendance in attendances_after_nine:
-                # print(hours_after_nine)
                 hours_after_nine += (attendance.check_out - attendance.check_in).seconds / 3600
-                # print(hours_after_nine)
+
+                print('after nine', hours_after_nine)
 
         return hours_after_nine

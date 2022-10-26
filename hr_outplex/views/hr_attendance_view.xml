@@ -10,6 +10,7 @@
 
                 <xpath expr="//tree/field[@name='worked_hours']" position="before">
                     <field name="hour_type" required="1"/>
+                    <field name="over_timed"/>
                 </xpath>
 
             </field>

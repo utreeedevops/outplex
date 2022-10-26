@@ -11,8 +11,18 @@
                 <xpath expr="//field[@name='struct_id']" position="after">
                     <field name="referral_bonus" widget='boolean_toggle'/>
                     <field name="n_referrals"/>
+                    <field name="add_in_bonus" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="add_vacations" widget='boolean_toggle'/>
                 </xpath>
 
+                <xpath expr="//notebook" position="inside">
+                    <page name="vacations" string="Vacations">
+                        <group>
+                            <field name="vacation_days"/>
+                            <field name="hours_per_day" widget="float_time"/>
+                        </group>
+                    </page>
+                </xpath>
             </field>
         </record>
     </data>
